@@ -1,4 +1,4 @@
-import { Controller, Body, Get, Param, ParseIntPipe, Post, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Controller, Body, Get, Param, ParseIntPipe, Post, UsePipes, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
 import { CreateUserDto } from 'src/users/dto/users.dtos';
 import { UsersService } from 'src/users/services/users/users.service';
 
@@ -8,16 +8,17 @@ export class UsersController {
 
     @Get()
     getUsers() {
-        console.log("Ты в гете или не в гете")
+        console.log("Ты в гете или не в гете3")
         return this.userService.getUsers()
     }
 
-    @Get("id/:id")
+    @Get(":id")
     findUsersById(@Param('id', ParseIntPipe) id: number) {
         return this.userService.findUserById(id)
     }
 
-    @Post('create')
+    @HttpCode(HttpStatus.OK)
+    @Post()
     @UsePipes(ValidationPipe)
     createUsers(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto)

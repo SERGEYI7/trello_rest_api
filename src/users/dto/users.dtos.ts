@@ -1,4 +1,5 @@
-import { IsEmail, IsNotEmpty, MinLength } from "class-validator"
+import { IsEmail, IsNotEmpty, MinLength, IsNumber } from "class-validator"
+import { ColumnEntity } from "src/column/entities/column.entity"
 
 export class CreateUserDto {
     @IsNotEmpty()
@@ -12,4 +13,6 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsEmail()
     email: string
+
+    columns: ColumnEntity[]
 }

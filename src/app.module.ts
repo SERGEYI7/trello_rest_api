@@ -2,10 +2,14 @@ import { AppService } from "./app.service"
 import { AppController } from "./app.controller";
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
-// import { ConfigModule, ConfigService } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { User } from "./typeorm/user.entity";
-// import entities from "./typeorm"
+import { User } from "./users/entities/user.entity";
+import { ColumnEntity } from "./column/entities/column.entity";
+import { Card } from "./card/entities/card.entity";
+import { Commentary } from "./commentary/entities/commentary.entity";
+import { ColumnModule } from './column/column.module';
+import { CardModule } from './card/card.module';
+import { CommentaryModule } from './commentary/commentary.module';
 
 @Module({
   imports: [
@@ -16,10 +20,13 @@ import { User } from "./typeorm/user.entity";
         username: 'postgres',
         password: 'postgres',
         database: 'postgres',
-        entities: [User],
+        entities: [User, ColumnEntity, Card, Commentary],
         synchronize: true,
     }),
-    UsersModule
+    UsersModule,
+    ColumnModule,
+    CardModule,
+    CommentaryModule
   ],
   controllers: [AppController],
   providers: [AppService],

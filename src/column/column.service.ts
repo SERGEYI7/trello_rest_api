@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ColumnEntity } from './entities/column.entity'
+import { User } from '../users/entities/user.entity'
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
 import { Repository } from 'typeorm'
@@ -8,17 +9,19 @@ import { Repository } from 'typeorm'
 @Injectable()
 export class ColumnService {
   constructor (
-    @InjectRepository(ColumnEntity) private readonly columnRepository: Repository<ColumnEntity>
+    @InjectRepository(ColumnEntity) private readonly columnRepository: Repository<ColumnEntity>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  create(createColumnDto: CreateColumnDto) {
+  async create(createColumnDto: CreateColumnDto) {
     const newColumn = this.columnRepository.create(createColumnDto)
-    this.columnRepository.save(newColumn)
-    return newColumn;
+    newColumn.user = await this.userRepository.findOneBy({id: 1})
+    const saveColumn = this.columnRepository.save(newColumn)
+    return saveColumn;
   }
 
-  findAll() {
-    return this.columnRepository.find();
+  async findAll(user_id: number) {
+    return await this.columnRepository.find({relations: {user: true}, where: {user: {id: user_id}}});
   }
 
   findOne(id: number) {

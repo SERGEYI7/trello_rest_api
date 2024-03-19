@@ -7,9 +7,9 @@ import { User } from "./users/entities/user.entity";
 import { ColumnEntity } from "./column/entities/column.entity";
 import { Card } from "./card/entities/card.entity";
 import { Commentary } from "./commentary/entities/commentary.entity";
-import { ColumnModule } from './column/column.module';
 import { CardModule } from './card/card.module';
 import { CommentaryModule } from './commentary/commentary.module';
+import { ColumnModule } from './column/column.module'
 
 @Module({
   imports: [
@@ -24,9 +24,9 @@ import { CommentaryModule } from './commentary/commentary.module';
         synchronize: true,
     }),
     UsersModule,
-    ColumnModule,
     CardModule,
-    CommentaryModule
+    CommentaryModule,
+    ColumnModule
   ],
   controllers: [AppController],
   providers: [AppService],

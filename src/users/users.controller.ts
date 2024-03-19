@@ -1,4 +1,18 @@
-import { Controller, Body, Get, Param, ParseIntPipe, Post, UsePipes, ValidationPipe, HttpCode, HttpStatus } from '@nestjs/common';
+import { 
+    Controller, 
+    Body, 
+    Get, 
+    Param, 
+    ParseIntPipe, 
+    Post, 
+    UsePipes, 
+    ValidationPipe, 
+    HttpCode, 
+    HttpStatus, 
+    UseInterceptors, 
+    ClassSerializerInterceptor 
+} from '@nestjs/common';
+
 import { CreateUserDto } from 'src/users/dto/users.dtos';
 import { UsersService } from './users.service';
 
@@ -6,10 +20,12 @@ import { UsersService } from './users.service';
 export class UsersController {
     constructor(private readonly userService: UsersService) {}
 
+
+    @UseInterceptors(ClassSerializerInterceptor)
     @Get()
-    getUsers() {
+    async getUsers() {
         console.log("Ты в гете или не в гете3")
-        return this.userService.getUsers()
+        return await this.userService.getUsers()
     }
 
     @Get(":id")

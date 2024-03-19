@@ -1,19 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { ColumnEntity } from './entities/column.entity'
 import { CreateColumnDto } from './dto/create-column.dto';
 import { UpdateColumnDto } from './dto/update-column.dto';
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class ColumnService {
+  constructor (
+    @InjectRepository(ColumnEntity) private readonly columnRepository: Repository<ColumnEntity>
+  ) {}
+
   create(createColumnDto: CreateColumnDto) {
-    return 'This action adds a new column';
+    const newColumn = this.columnRepository.create(createColumnDto)
+    this.columnRepository.save(newColumn)
+    return newColumn;
   }
 
   findAll() {
-    return `This action returns all column`;
+    return this.columnRepository.find();
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} column`;
+    const newColumn = this.columnRepository.findOneBy({id})
+    return ;
   }
 
   update(id: number, updateColumnDto: UpdateColumnDto) {

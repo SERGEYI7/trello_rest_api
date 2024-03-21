@@ -9,8 +9,8 @@ export class ColumnController {
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-  create(@Body() createColumnDto: CreateColumnDto) {
-    return this.columnService.create(createColumnDto);
+  create(@Body() createColumnDto: CreateColumnDto, @Param('userId') userId: number) {
+    return this.columnService.create(createColumnDto, userId);
   }
 
   @UseInterceptors(ClassSerializerInterceptor)

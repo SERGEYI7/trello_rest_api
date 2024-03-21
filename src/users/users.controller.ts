@@ -5,6 +5,7 @@ import {
     Param, 
     ParseIntPipe, 
     Post, 
+    Delete,
     UsePipes, 
     ValidationPipe, 
     HttpCode, 
@@ -38,6 +39,11 @@ export class UsersController {
     @UsePipes(ValidationPipe)
     createUsers(@Body() createUserDto: CreateUserDto) {
         return this.userService.createUser(createUserDto)
+    }
+
+    @Delete(':id')
+    deleteUser(@Param('id', ParseIntPipe) id: number) {
+        return this.userService.deleteUser(id)
     }
 
 }

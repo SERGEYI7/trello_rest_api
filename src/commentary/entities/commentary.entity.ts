@@ -1,4 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Exclude, Expose } from "class-transformer"
+import { Card } from "src/card/entities/card.entity"
 
 
 @Entity()
@@ -9,6 +11,6 @@ export class Commentary {
     @Column()
     text: string
 
-    // @ManyToOne(() => User, (user: User) => user.columns)
-    // user: User
+    @ManyToOne(() => Card, (card: Card) => card.commentaries, {onDelete: "CASCADE", onUpdate: "CASCADE"})
+    card: Card
 }

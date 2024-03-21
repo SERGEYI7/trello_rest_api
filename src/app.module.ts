@@ -10,12 +10,13 @@ import { Commentary } from "./commentary/entities/commentary.entity";
 import { CardModule } from './card/card.module';
 import { CommentaryModule } from './commentary/commentary.module';
 import { ColumnModule } from './column/column.module'
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
         type: 'postgres',
-        host: 'db',
+        host: 'localhost',
         port: 5432,
         username: 'postgres',
         password: 'postgres',
@@ -26,7 +27,8 @@ import { ColumnModule } from './column/column.module'
     UsersModule,
     CardModule,
     CommentaryModule,
-    ColumnModule
+    ColumnModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],

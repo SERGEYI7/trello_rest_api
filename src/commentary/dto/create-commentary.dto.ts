@@ -1,1 +1,3 @@
-export class CreateCommentaryDto {}
+export class CreateCommentaryDto {
+    text: string
+}

@@ -3,18 +3,19 @@ import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
 
-@Controller('card')
+@Controller('column/:columnId/card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
   @Post()
-  create(@Body() createCardDto: CreateCardDto) {
-    return this.cardService.create(createCardDto);
+  async create(@Body() createCardDto: CreateCardDto, @Param('columnId') columnId: number) {
+    return this.cardService.create(createCardDto, columnId);
   }
 
   @Get()
-  findAll() {
-    return this.cardService.findAll();
+  findAll(@Param('columnId') columnId: number) {
+    console.log(`Получил айди колонки: ${columnId}`)
+    return this.cardService.findAll(columnId);
   }
 
   @Get(':id')

@@ -16,7 +16,7 @@ export class User {
     @Exclude()
     password: string;
 
-    @OneToMany(() => ColumnEntity, (column: ColumnEntity) => column.user)
+    @OneToMany(() => ColumnEntity, (column: ColumnEntity) => column.user, {cascade: true, eager: true})
     @Expose()
     columns: ColumnEntity[];
 }

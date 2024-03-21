@@ -3,18 +3,18 @@ import { CommentaryService } from './commentary.service';
 import { CreateCommentaryDto } from './dto/create-commentary.dto';
 import { UpdateCommentaryDto } from './dto/update-commentary.dto';
 
-@Controller('commentary')
+@Controller('column/:columnId/card/:cardId/commentary')
 export class CommentaryController {
   constructor(private readonly commentaryService: CommentaryService) {}
 
   @Post()
-  create(@Body() createCommentaryDto: CreateCommentaryDto) {
-    return this.commentaryService.create(createCommentaryDto);
+  create(@Body() createCommentaryDto: CreateCommentaryDto, @Param('columnId') columnId: number, @Param('cardId') cardId: number) {
+    return this.commentaryService.create(createCommentaryDto, columnId, cardId);
   }
 
   @Get()
-  findAll() {
-    return this.commentaryService.findAll();
+  findAll(@Param('columnId') columnId: number, @Param('cardId') cardId: number) {
+    return this.commentaryService.findAll(columnId, cardId);
   }
 
   @Get(':id')

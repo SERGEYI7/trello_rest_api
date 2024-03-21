@@ -13,19 +13,20 @@ export class ColumnService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createColumnDto: CreateColumnDto) {
+  async create(createColumnDto: CreateColumnDto, userId: number) {
     const newColumn = this.columnRepository.create(createColumnDto)
-    newColumn.user = await this.userRepository.findOneBy({id: 1})
+    newColumn.user = await this.userRepository.findOneBy({id: userId})
     const saveColumn = this.columnRepository.save(newColumn)
     return saveColumn;
   }
 
   async findAll(user_id: number) {
-    return await this.columnRepository.find({relations: {user: true}, where: {user: {id: user_id}}});
+    return await this.columnRepository.find({relations: ["cards", "cards.commentaries"], where: {user: {id: user_id}}});
   }
 
   findOne(id: number) {
-    const newColumn = this.columnRepository.findOneBy({id})
+    const user_id = 1
+    const newColumn = this.columnRepository.findOneBy({id: id, user: {id: user_id}})
     return ;
   }
 
@@ -33,7 +34,7 @@ export class ColumnService {
     return `This action updates a #${id} column`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} column`;
+  async remove(id: number) {
+    return await this.columnRepository.delete(id)
   }
 }

@@ -11,7 +11,7 @@ export class UsersService {
     ) {}
 
     getUsers() {
-        return this.userRepository.find()
+        return this.userRepository.find({relations: ["columns", "columns.cards", "columns.cards.commentaries"]})
     }
 
     async createUser(createUserDto: CreateUserDto) {
@@ -37,5 +37,7 @@ export class UsersService {
         return this.userRepository.findOneBy({id})
     }
 
-    find 
+    async deleteUser(id: number) {
+        return await this.userRepository.delete(id)
+    } 
 }

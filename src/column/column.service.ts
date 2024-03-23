@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus, ExecutionContext } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ColumnEntity } from './entities/column.entity'
 import { User } from '../users/entities/user.entity'
@@ -13,11 +13,12 @@ export class ColumnService {
     @InjectRepository(User) private readonly userRepository: Repository<User>,
   ) {}
 
-  async create(createColumnDto: CreateColumnDto, userId: number) {
+  async create(createColumnDto: CreateColumnDto, request: Request) {
+    const userId = request["user"]['sub']
     const newColumn = this.columnRepository.create(createColumnDto)
     newColumn.user = await this.userRepository.findOneBy({id: userId})
-    const saveColumn = this.columnRepository.save(newColumn)
-    return saveColumn;
+    const saveColumn = await this.columnRepository.save(newColumn)
+    return {"id": saveColumn.id, "name": saveColumn.name};
   }
 
   async findAll(user_id: number) {
@@ -25,16 +26,17 @@ export class ColumnService {
   }
 
   findOne(id: number) {
-    const user_id = 1
-    const newColumn = this.columnRepository.findOneBy({id: id, user: {id: user_id}})
-    return ;
+    const column = this.columnRepository.findOneBy({id: id})
+    return column;
   }
 
-  update(id: number, updateColumnDto: UpdateColumnDto) {
-    return `This action updates a #${id} column`;
-  }
+  async update(id: number, updateColumnDto: UpdateColumnDto) {
+    updateColumnDto["id"] = id 
+    return await this.columnRepository.save(updateColumnDto)
+    }
 
   async remove(id: number) {
-    return await this.columnRepository.delete(id)
+    await this.columnRepository.delete(id)
+    return {"result": "deletion successful"}
   }
 }

@@ -16,26 +16,27 @@ export class CardService
 
   async create(createCardDto: CreateCardDto, columnId: number) {
     const newCard = this.cardRepository.create(createCardDto)
-    newCard.column = await this.columnRepository.findOneBy({id: 1})
-    const saveCard = this.cardRepository.save(newCard)
-    return saveCard
-
-    return 'This action adds a new card';
+    newCard.column = await this.columnRepository.findOneBy({id: columnId})
+    const saveCard = await this.cardRepository.save(newCard)
+    return {"id": saveCard.id, "name": saveCard.name}
   }
 
-  findAll(columnId: number) {
-    return this.cardRepository.find({relations: {column: true}, where: {column: {id: columnId}}});
+  findAll(userId: number, columnId: number) {
+    return this.cardRepository.find({where: {column: {id: columnId, user: {id: userId}}}});
   }
 
-  findOne(id: number) {
-    return this.cardRepository.findOneBy({id});
+  async findOne(userId: number, columnId: number, id: number) {
+    const relala = await this.cardRepository.findOne({where: {id: id, column: {id: columnId, user: {id: userId}}}})
+    return relala;
   }
 
-  update(id: number, updateCardDto: UpdateCardDto) {
-    return `This action updates a #${id} card`;
+  async update(id: number, updateCardDto: UpdateCardDto) {
+    updateCardDto["id"] = id 
+    return await this.cardRepository.save(updateCardDto)
   }
 
   remove(id: number) {
-    return `This action removes a #${id} card`;
+    this.cardRepository.delete(id)
+    return {"result": "deletion successful"}
   }
 }

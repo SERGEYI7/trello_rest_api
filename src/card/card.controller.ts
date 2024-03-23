@@ -2,32 +2,35 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { CardService } from './card.service';
 import { CreateCardDto } from './dto/create-card.dto';
 import { UpdateCardDto } from './dto/update-card.dto';
+import { Roles } from 'src/auth/roles.decorator'; 
 
-@Controller('column/:columnId/card')
+@Controller('users/:userId/column/:columnId/card')
 export class CardController {
   constructor(private readonly cardService: CardService) {}
 
+  @Roles(["card"])
   @Post()
   async create(@Body() createCardDto: CreateCardDto, @Param('columnId') columnId: number) {
     return this.cardService.create(createCardDto, columnId);
   }
 
   @Get()
-  findAll(@Param('columnId') columnId: number) {
-    console.log(`Получил айди колонки: ${columnId}`)
-    return this.cardService.findAll(columnId);
+  findAll(@Param('userId') userId: number, @Param('columnId') columnId: number) {
+    return this.cardService.findAll(userId, columnId);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.cardService.findOne(+id);
+  findOne(@Param('userId') userId: number, @Param('columnId') columnId: number, @Param('id') id: number) {
+    return this.cardService.findOne(userId, columnId, +id);
   }
 
+  @Roles(["card"])
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCardDto: UpdateCardDto) {
     return this.cardService.update(+id, updateCardDto);
   }
 
+  @Roles(["card"])
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.cardService.remove(+id);

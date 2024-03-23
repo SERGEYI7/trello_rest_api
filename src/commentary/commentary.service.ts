@@ -6,6 +6,7 @@ import { Commentary } from './entities/commentary.entity';
 import { ColumnEntity } from 'src/column/entities/column.entity';
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { Reflector } from '@nestjs/core';
 
 @Injectable(
 )
@@ -14,30 +15,37 @@ export class CommentaryService {
     @InjectRepository(Commentary) private readonly commentaryRepository: Repository<Commentary>,
     @InjectRepository(ColumnEntity) private readonly columnRepository: Repository<ColumnEntity>,
     @InjectRepository(Card) private readonly cardRepository: Repository<Card>,
+    private reflector: Reflector
   ) {}
 
   async create(createCommentaryDto: CreateCommentaryDto, columnId: number, cardId: number) {
     const newCommentary = this.commentaryRepository.create(createCommentaryDto)
     newCommentary.card = await this.cardRepository.findOneBy({id: cardId})
-    console.log(newCommentary)
-    const saveCommentary = this.commentaryRepository.save(newCommentary)
-    return saveCommentary;
+    const saveCommentary = await this.commentaryRepository.save(newCommentary)
+    return {"id": saveCommentary.id, "text": saveCommentary.text};
   }
 
-  findAll(columnId: number, cardId: number) {
-    this.commentaryRepository.find({relations: ["card", "card.column"], where: {}})
-    return this.commentaryRepository.find({relations: ["card", "card.column"], where: {card: {id: cardId}}});
+  async findAll(userId: number, columnId: number, cardId: number) {
+    const result = await this.commentaryRepository.find({select: {id: true, text: true}, 
+      where: {card: {id: cardId, column: {id: columnId, user: {id: userId}}}}}
+      )
+    return result
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} commentary`;
+  async findOne(userId: number, columnId: number, cardId: number, commentaryId: number) {
+    const result = await this.commentaryRepository.find({select: {id: true, text: true}, 
+      where: {id: commentaryId, card: {id: cardId, column: {id: columnId, user: {id: userId}}}}}
+      )
+    return result[0]
   }
 
-  update(id: number, updateCommentaryDto: UpdateCommentaryDto) {
-    return `This action updates a #${id} commentary`;
+  async update(id: number, updateCommentaryDto: UpdateCommentaryDto) {
+    updateCommentaryDto["id"] = id
+    return await this.commentaryRepository.save(updateCommentaryDto)
   }
 
   remove(id: number) {
-    return `This action removes a #${id} commentary`;
+    this.commentaryRepository.delete(id)
+    return {"result": "deletion successful"}
   }
 }

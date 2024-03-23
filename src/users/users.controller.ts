@@ -16,12 +16,14 @@ import {
 
 import { CreateUserDto } from 'src/users/dto/users.dtos';
 import { UsersService } from './users.service';
+import { Public } from 'src/auth/auth.guard';
 
 @Controller('users')
 export class UsersController {
     constructor(private readonly userService: UsersService) {}
 
 
+    // @Public()
     @UseInterceptors(ClassSerializerInterceptor)
     @Get()
     async getUsers() {
